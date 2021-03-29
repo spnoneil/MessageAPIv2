@@ -35,5 +35,20 @@ namespace Message.Controllers
 
       return query.ToList();
     }
+    //GET: api/Messages/1
+    [HttpGet("{id}")]
+    public async Task<ActionResult<BMessage>> GetMessage(int id)
+    {
+      var message = await _db.BMessages.FindAsync(id);
+
+      if (message == null)
+      {
+        return NotFound();
+      }
+
+      return message;
+    }
+
+    
   }
 }
