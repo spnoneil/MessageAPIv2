@@ -92,5 +92,10 @@ namespace Message.Controllers
 
       return NoContent();
     }
+
+    private bool BMessageExists(int id)
+    {
+      return _db.BMessages.Any(e => e.BMessageId == id);
+    }
   }
 }
