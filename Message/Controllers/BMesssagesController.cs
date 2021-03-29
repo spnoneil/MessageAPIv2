@@ -77,5 +77,20 @@ namespace Message.Controllers
       
       return NoContent();
     }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteBMessage(int id)
+    {
+      var message = await _db.BMessages.FindAsync(id);
+      if (message == null)
+      {
+        return NotFound();
+      }
+
+      _db.BMessages.Remove(message);
+      await _db.SaveChangesAsync();
+
+      return NoContent();
+    }
   }
 }
