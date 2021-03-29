@@ -20,7 +20,7 @@ namespace Message.Models
               new BMessage { BMessageId = 5, Message = "Bartholomew", Posted = DateTime.Now }
           );
     }
-
+ 
     public DbSet<BMessage> BMessages { get; set; }
   }
 }

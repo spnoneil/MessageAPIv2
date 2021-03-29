@@ -19,7 +19,7 @@ namespace Message.Controllers
     {
       _db = db;
     }
-    [HttpGet]
+    [HttpGet("all")]
     public async Task<ActionResult<IEnumerable<BMessage>>> Get(string message, DateTime posted)
     {
       var query = _db.BMessages.AsQueryable();
