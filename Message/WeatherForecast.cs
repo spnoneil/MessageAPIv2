@@ -1,6 +1,6 @@
 using System;
 
-namespace MessageAPI.Solution
+namespace Message
 {
     public class WeatherForecast
     {
