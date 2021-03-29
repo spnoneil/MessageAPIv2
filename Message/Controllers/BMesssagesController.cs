@@ -49,6 +49,33 @@ namespace Message.Controllers
       return message;
     }
 
-    
+    // PUT: api/Messages/1  }
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Put(int id, BMessage message)
+    {
+      if (id != message.BMessageId)
+      {
+        return BadRequest();
+      }
+      _db.Entry(message).State = EntityState.Modified;
+
+      try
+      {
+        await _db.SaveChangesAsync();
+      }
+      catch (DbUpdateConcurrencyException)
+      {
+        if(!BMessageExists(id))
+        {
+          return NotFound();
+        }
+        else
+        {
+          throw;
+        }
+      }
+      
+      return NoContent();
+    }
   }
 }
