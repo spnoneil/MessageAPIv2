@@ -6,9 +6,10 @@ using Message.Models;
 using System.Linq;
 using System;
 
+
 namespace Message.Controllers
 {
-  [Route("api/[controller]")]
+  [Route("api/Messages")]
   [ApiController]
 
   public class BMessagesController : ControllerBase
@@ -19,7 +20,7 @@ namespace Message.Controllers
       _db = db;
     }
     [HttpGet]
-    public ActionResult<IEnumerable<BMessage>> Get(string message, DateTime posted)
+    public async Task<ActionResult<IEnumerable<BMessage>>> Get(string message, DateTime posted)
     {
       var query = _db.BMessages.AsQueryable();
 
@@ -33,7 +34,7 @@ namespace Message.Controllers
         query = query.Where(e => e.Posted == posted);
       }
 
-      return query.ToList();
+      return await query.ToListAsync();
     }
     //GET: api/Messages/1
     [HttpGet("{id}")]
@@ -47,6 +48,15 @@ namespace Message.Controllers
       }
 
       return message;
+    }
+    // POST api/Messages
+    [HttpPost]
+    public async Task<ActionResult<BMessage>> Post(BMessage message)
+    {
+      _db.BMessages.Add(message);
+      await _db.SaveChangesAsync();
+      
+      return CreatedAtAction("Post", new { id = message.BMessageId }, message);
     }
 
     // PUT: api/Messages/1  }
@@ -63,6 +73,7 @@ namespace Message.Controllers
       {
         await _db.SaveChangesAsync();
       }
+
       catch (DbUpdateConcurrencyException)
       {
         if(!BMessageExists(id))
