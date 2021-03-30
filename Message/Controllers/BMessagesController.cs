@@ -20,18 +20,13 @@ namespace Message.Controllers
       _db = db;
     }
     [HttpGet("all")]
-    public async Task<ActionResult<IEnumerable<BMessage>>> Get(string message, DateTime posted)
+    public async Task<ActionResult<IEnumerable<BMessage>>> Get(string message)
     {
       var query = _db.BMessages.AsQueryable();
 
       if (message != null)
       {
         query = query.Where(e => e.Message == message);
-      }
-
-      if (posted != null)
-      {
-        query = query.Where(e => e.Posted == posted);
       }
 
       return await query.ToListAsync();
@@ -51,12 +46,23 @@ namespace Message.Controllers
     }
     // POST api/Messages
     [HttpPost]
-    public async Task<ActionResult<BMessage>> Post(BMessage message)
+    public async Task<ActionResult<BMessage>> Post(BMessage message, string name)
     {
-      _db.BMessages.Add(message);
-      await _db.SaveChangesAsync();
+      var thisGroup = _db.Groups.Include(entry => entry.BMessages).FirstOrDefault(entry => entry.GroupName == name);
       
-      return CreatedAtAction("Post", new { id = message.BMessageId }, message);
+      if (thisGroup != null)
+      {
+        message.Posted = DateTime.Now;
+        message.GroupId = thisGroup.GroupId;
+        thisGroup.BMessages.Add(message);
+        _db.Groups.Update(thisGroup);    
+        await _db.SaveChangesAsync();
+      }
+      else
+      {
+        return BadRequest();
+      }
+      return CreatedAtAction("Post", new { id = message.GroupId}, thisGroup);
     }
 
     // PUT: api/Messages/1  }
