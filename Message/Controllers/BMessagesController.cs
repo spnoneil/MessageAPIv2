@@ -54,22 +54,14 @@ namespace Message.Controllers
       {
         message.Posted = DateTime.Now;
         message.GroupId = thisGroup.GroupId;
-        // Console.WriteLine(string.Join(" ", thisGroup.BMessages.Count));
         thisGroup.BMessages.Add(message);
-        // _db.Groups.Attach(thisGroup);
-        // _db.Entry(thisGroup).Collection("BMessages").IsModified = true;
-        // Console.WriteLine(string.Join(" ", thisGroup.BMessages.Count));
-        _db.Groups.Update(thisGroup);
-        // _db.SaveChanges();
-        // _db.Entry(thisGroup).State = EntityState.Modified;
-        // await _db.Groups.AddAsync(thisGroup);        
+        _db.Groups.Update(thisGroup);    
         await _db.SaveChangesAsync();
       }
       else
       {
         return BadRequest();
       }
-      // return CreatedAtAction("Post", new { id = message.BMessageId }, message);
       return CreatedAtAction("Post", new { id = message.GroupId}, thisGroup);
     }
 
