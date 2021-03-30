@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Message.Migrations
 {
     [DbContext(typeof(MessageContext))]
-    [Migration("20210329183914_Initial")]
-    partial class Initial
+    [Migration("20210330205906_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -25,6 +25,9 @@ namespace Message.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<int>("GroupId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Message")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
@@ -33,7 +36,37 @@ namespace Message.Migrations
 
                     b.HasKey("BMessageId");
 
+                    b.HasIndex("GroupId");
+
                     b.ToTable("BMessages");
+                });
+
+            modelBuilder.Entity("Message.Models.Group", b =>
+                {
+                    b.Property<int>("GroupId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("GroupName")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.HasKey("GroupId");
+
+                    b.ToTable("Groups");
+                });
+
+            modelBuilder.Entity("Message.Models.BMessage", b =>
+                {
+                    b.HasOne("Message.Models.Group", null)
+                        .WithMany("BMessages")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Message.Models.Group", b =>
+                {
+                    b.Navigation("BMessages");
                 });
 #pragma warning restore 612, 618
         }
