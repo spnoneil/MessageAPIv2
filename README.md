@@ -1,5 +1,5 @@
-## <div align="center">Messagenger API</div>
-#### <div align="center"> *A website created for tracking treats and flavors available at Pierre's Bakery* </div> 
+## <div align="center">Messenger API</div>
+#### <div align="center"> *A message board API with CRUD functionality* </div> 
 ***<p align="right">Morgan Bradford***</p>   
 <p align="center">
 <br>

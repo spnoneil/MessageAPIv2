@@ -3,15 +3,15 @@ using System.Collections.Generic;
 namespace Message.Models
 {
 
-public class Group
+public class User
   { 
 
-    public Group()
+    public User()
     {
       this.BMessages = new HashSet<BMessage>();
     }
-    public int GroupId { get; private set;}
-    public string GroupName { get; set; }
+    public int UserId { get; private set;}
+    public string UserName { get; set; }
     public ICollection<BMessage> BMessages { get; set; }
 
   }
