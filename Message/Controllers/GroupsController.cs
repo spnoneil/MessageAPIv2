@@ -36,9 +36,8 @@ namespace Message.Controllers
     [HttpGet("{name}")]
     public async Task<ActionResult<Group>> GetGroup(string name)
     {
-      var thisId = _db.Groups.FirstOrDefault(entry => entry.GroupName == name).GroupId;      
+      var thisId = _db.Groups.Include(entry => entry.BMessages).FirstOrDefault(entry => entry.GroupName == name).GroupId;       
       var Group = await _db.Groups.FindAsync(thisId);
-
       if (Group == null)
       {
         return NotFound();
@@ -60,38 +59,41 @@ namespace Message.Controllers
       }
       return CreatedAtAction("Post", new { id = group.GroupId }, group);
     }
+
+    // PUT: api/Groups/name  }
+    [HttpPut("{name}")]
+    public async Task<IActionResult> Put(string groupName, Group Group)
+    {
+      if (groupName != Group.GroupName)
+      {
+        return BadRequest();
+      }
+      _db.Entry(Group).State = EntityState.Modified;
+      try
+      {
+
+        await _db.SaveChangesAsync();
+      }
+
+      catch (DbUpdateConcurrencyException)
+      {
+        if(!GroupExists(groupName))
+        {
+          return NotFound();
+        }
+        else
+        {
+          throw;
+        }
+      }
+      return NoContent();
+    }
+    private bool GroupExists(string groupName)
+    {
+      return _db.Groups.Any(e => e.GroupName == groupName);
+    }
   }
 }
-
-//     // PUT: api/Groups/1  }
-//     [HttpPut("{id}")]
-//     public async Task<IActionResult> Put(int id, BGroup Group)
-//     {
-//       if (id != Group.BGroupId)
-//       {
-//         return BadRequest();
-//       }
-//       _db.Entry(Group).State = EntityState.Modified;
-
-//       try
-//       {
-//         await _db.SaveChangesAsync();
-//       }
-
-//       catch (DbUpdateConcurrencyException)
-//       {
-//         if(!BGroupExists(id))
-//         {
-//           return NotFound();
-//         }
-//         else
-//         {
-//           throw;
-//         }
-//       }
-      
-//       return NoContent();
-//     }
 
 //     [HttpDelete("{id}")]
 //     public async Task<IActionResult> DeleteBGroup(int id)
@@ -108,9 +110,5 @@ namespace Message.Controllers
 //       return NoContent();
 //     }
 
-//     private bool BGroupExists(int id)
-//     {
-//       return _db.Group.Any(e => e.BGroupId == id);
-//     }
 //   }
 // }
